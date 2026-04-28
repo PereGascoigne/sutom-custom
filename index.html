@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sutom • Invitation personnalisée</title>
     <style>
-        /* ---------- Style très fidèle à Sutom ---------- */
+        /* ... (gardez tout le CSS de la réponse précédente) ... */
         :root {
             --bg: #121213;
             --tile-red: #e64a2e;
@@ -18,10 +18,7 @@
             --tile-text: #ffffff;
         }
 
-        * {
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             background: var(--bg);
@@ -36,176 +33,66 @@
             user-select: none;
         }
 
-        h1 {
-            margin: 0.2em 0;
-            font-size: 2rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-        }
+        h1 { margin: 0.2em 0; font-size: 2rem; letter-spacing: 0.1em; text-transform: uppercase; }
 
-        .board {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin: 1rem 0;
-        }
-
-        .row {
-            display: flex;
-            gap: 5px;
-            justify-content: center;
-        }
+        .board { display: flex; flex-direction: column; gap: 5px; margin: 1rem 0; }
+        .row { display: flex; gap: 5px; justify-content: center; }
 
         .tile {
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: var(--tile-text);
-            transition: all 0.2s;
+            width: 50px; height: 50px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: bold; text-transform: uppercase;
+            color: var(--tile-text); transition: all 0.2s;
         }
 
-        /* Formes "Sutom" : carré pour bien placé, cercle pour présent/absent */
-        .tile.correct {
-            background: var(--tile-red);
-            border-radius: 4px;       /* carré */
-        }
+        .tile.correct { background: var(--tile-red); border-radius: 4px; }
+        .tile.present { background: var(--tile-yellow); border-radius: 50%; }
+        .tile.absent { background: var(--tile-blue); border-radius: 50%; }
+        .tile.empty { background: none; border: 2px solid var(--tile-empty); border-radius: 4px; }
+        .tile.filled { border: 2px solid var(--key-bg); border-radius: 4px; background: none; }
 
-        .tile.present {
-            background: var(--tile-yellow);
-            border-radius: 50%;       /* cercle */
-        }
-
-        .tile.absent {
-            background: var(--tile-blue);
-            border-radius: 50%;       /* cercle */
-        }
-
-        .tile.empty {
-            background: none;
-            border: 2px solid var(--tile-empty);
-            border-radius: 4px;
-        }
-
-        .tile.filled {
-            border: 2px solid var(--key-bg);
-            border-radius: 4px;
-            background: none;
-        }
-
-        .keyboard {
-            margin-top: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            align-items: center;
-            max-width: 500px;
-            width: 100%;
-        }
-
-        .keyboard-row {
-            display: flex;
-            gap: 4px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+        .keyboard { margin-top: 1rem; display: flex; flex-direction: column; gap: 6px; align-items: center; max-width: 500px; width: 100%; }
+        .keyboard-row { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; }
 
         .key {
-            background: var(--key-bg);
-            border: none;
-            color: white;
-            font-size: 1.1rem;
-            font-weight: bold;
-            padding: 0.7em 0.4em;
-            min-width: 2.2em;
-            text-align: center;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.2s;
-            text-transform: uppercase;
+            background: var(--key-bg); border: none; color: white;
+            font-size: 1.1rem; font-weight: bold; padding: 0.7em 0.4em;
+            min-width: 2.2em; text-align: center; border-radius: 4px;
+            cursor: pointer; transition: background 0.2s; text-transform: uppercase;
         }
 
-        .key.wide {
-            min-width: 3.5em;
-            font-size: 0.9rem;
-        }
+        .key.wide { min-width: 3.5em; font-size: 0.9rem; }
+        .key.correct { background: var(--tile-red); }
+        .key.present { background: var(--tile-yellow); }
+        .key.absent { background: var(--key-absent); }
 
-        .key.correct {
-            background: var(--tile-red);
-        }
-
-        .key.present {
-            background: var(--tile-yellow);
-        }
-
-        .key.absent {
-            background: var(--key-absent);
-        }
-
-        .message {
-            margin: 1rem 0;
-            font-size: 1.2rem;
-            text-align: center;
-            min-height: 1.5em;
-        }
+        .message { margin: 1rem 0; font-size: 1.2rem; text-align: center; min-height: 1.5em; }
 
         .share-btn, .create-btn {
-            background: #538d4e;
-            color: white;
-            border: none;
-            padding: 0.8em 1.5em;
-            font-size: 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            margin: 0.5rem;
-            font-weight: bold;
+            background: #538d4e; color: white; border: none;
+            padding: 0.8em 1.5em; font-size: 1rem; border-radius: 6px;
+            cursor: pointer; margin: 0.5rem; font-weight: bold;
         }
 
         .copy-link {
-            background: var(--key-bg);
-            color: white;
-            border: none;
-            padding: 0.6em 1.2em;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
+            background: var(--key-bg); color: white; border: none;
+            padding: 0.6em 1.2em; border-radius: 4px; cursor: pointer; font-size: 0.9rem;
         }
 
-        .create-section {
-            text-align: center;
-            margin-top: 2rem;
-        }
-
+        .create-section { text-align: center; margin-top: 2rem; }
         .create-section input {
-            padding: 0.7em;
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            width: 200px;
-            border-radius: 4px;
-            border: 1px solid #565758;
-            background: #2b2b2c;
-            color: white;
-            text-align: center;
+            padding: 0.7em; font-size: 1.2rem; text-transform: uppercase;
+            width: 200px; border-radius: 4px; border: 1px solid #565758;
+            background: #2b2b2c; color: white; text-align: center;
         }
 
         .invite-link-box {
-            background: #2b2b2c;
-            padding: 0.8em;
-            border-radius: 6px;
-            margin: 1rem 0;
-            word-break: break-all;
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: #d7dadc;
+            background: #2b2b2c; padding: 0.8em; border-radius: 6px;
+            margin: 1rem 0; word-break: break-all; font-family: monospace;
+            font-size: 0.9rem; color: #d7dadc;
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -265,137 +152,94 @@
             "VANNE","VAPES","VEGAN","VENDU","VENTE","VENUE","VERBE","VERRE","VERTU","VETUE",
             "VIDEO","VIEIL","VIGNE","VILLE","VISER","VITAL","VITRE","VOILE","VOIRE","VOIX",
             "VOLER","VOTER","VOUTE","VOYER","ZEBRE"
-            // Ajoutez ici des mots de différentes longueurs (5 à 9 lettres)
         ]);
-        
-        // On ajoute quelques mots de 6,7,8 lettres pour l'exemple
+        // Mots plus longs pour l'exemple
         ["CHATON","FLEURS","PLANER","ROUTER","SIMPLE","TABLEAU","VOITURE","AVIATEUR","BATIMENT",
          "CHAMPION","DECHIRER","ECRIVAIN","FOURNEAU","HORIZON","JOURNAL","MAGASIN","NUMERAL",
          "ORANGER","PAYSAGE","RENARDER","SOLITAIRE","TERRAIN","URGENCE","VOISINER","ZENITUDE"
         ].forEach(w => DICTIONARY.add(w));
-        
-        // Petite liste de mots plus longs
         ["ABSOLUMENT","BRICOLAGE","CAMEMBERT","DECORATION","ESCALADER","FRAGILITE","GOUVERNER",
          "HARMONIEUX","IMPATIENT","JARDINAGE","KILOMETRE","LUMINEUSE","MAGNIFIQUE","NARRATEUR",
          "OBLIGERAI","PARCOURIR","QUESTIONS","RENCONTRE"
         ].forEach(w => DICTIONARY.add(w));
-        
-        // ==================== GESTION URL ====================
+
+        // ==================== GESTION URL (corrigée) ====================
         function getParam(name) {
             const url = new URL(window.location.href);
             return url.searchParams.get(name);
         }
-        
-        function encodeWordForUrl(word) {
-            const encoder = new TextEncoder();
-            const bytes = encoder.encode(word);
-            let binary = '';
-            bytes.forEach(b => binary += String.fromCharCode(b));
-            return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/,'');
-        }
-        
-        function decodeWordFromUrl(encoded) {
-            try {
-                encoded = encoded.replace(/-/g, '+').replace(/_/g, '/');
-                const binary = atob(encoded);
-                const bytes = new Uint8Array(binary.length);
-                for (let i = 0; i < binary.length; i++) {
-                    bytes[i] = binary.charCodeAt(i);
-                }
-                return new TextDecoder().decode(bytes).toUpperCase().trim();
-            } catch(e) {
-                return null;
-            }
-        }
-        
-        // ==================== GESTION DU JEU ====================
-        let secretWord = '';
-        let firstLetter = '';
-        let remainingLetters = ''; // lettres à deviner (sans la première)
-        let attempts = [];
-        const MAX_ATTEMPTS = 6;
-        let currentGuess = '';
-        let gameOver = false;
-        let won = false;
-        
+
+        // Plus besoin de fonctions encode/decode personnalisées, on utilise directement encodeURIComponent
+
         const boardDiv = document.getElementById('board');
         const messageDiv = document.getElementById('message');
         const keyboardDiv = document.getElementById('keyboard');
         const gameContainer = document.getElementById('game-container');
         const createContainer = document.getElementById('create-container');
-        
-        // Couleurs pour le partage (emoji)
-        const CORRECT = '🟥';
-        const PRESENT = '🟡';
-        const ABSENT = '🟦';
-        
+
+        // Variables de jeu
+        let secretWord = '';
+        let firstLetter = '';
+        let remainingLetters = '';
+        let attempts = [];
+        const MAX_ATTEMPTS = 6;
+        let currentGuess = '';
+        let gameOver = false;
+        let won = false;
+
         function initGame(word) {
             word = word.toUpperCase().trim();
-            // Vérifications de base
             if (!word || word.length < 2 || !/^[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜŸÇ]{2,}$/i.test(word)) {
-                showCreateMessage("Mot invalide. Utilisez uniquement des lettres (accents acceptés).");
+                alert("Mot invalide. Utilisez uniquement des lettres (accents acceptés).");
                 return;
             }
-            
             secretWord = word;
             firstLetter = word[0];
             remainingLetters = word.slice(1);
-            
             attempts = [];
             currentGuess = '';
             gameOver = false;
             won = false;
-            
-            // Afficher le jeu, cacher la création
+
             gameContainer.classList.remove('hidden');
             createContainer.classList.add('hidden');
-            
-            // Mettre à jour l'URL sans recharger
-            const newUrl = window.location.origin + window.location.pathname + '?w=' + encodeWordForUrl(word);
+            document.getElementById('copy-invite-link').classList.remove('hidden');
+            document.getElementById('share-result').classList.add('hidden');
+
+            // Mise à jour de l'URL proprement
+            const newUrl = window.location.origin + window.location.pathname + '?w=' + encodeURIComponent(word);
             window.history.replaceState({}, '', newUrl);
-            
-            // Construire le plateau et le clavier
+
             buildBoard();
             buildKeyboard();
             updateMessage('');
-            document.getElementById('copy-invite-link').classList.remove('hidden');
-            document.getElementById('share-result').classList.add('hidden');
-            
-            // Focus sur le document pour les touches physiques
-            document.body.focus();
         }
-        
+
+        // ... (le reste des fonctions buildBoard, buildKeyboard, evaluateGuess, etc. reste identique) ...
         function buildBoard() {
             boardDiv.innerHTML = '';
             for (let i = 0; i < MAX_ATTEMPTS; i++) {
                 const row = document.createElement('div');
                 row.className = 'row';
-                
-                // Première cellule (fixe, rouge)
                 const firstCell = document.createElement('div');
                 firstCell.className = 'tile correct';
                 firstCell.textContent = firstLetter;
                 row.appendChild(firstCell);
-                
-                // Cellules des lettres restantes
                 for (let j = 0; j < remainingLetters.length; j++) {
                     const cell = document.createElement('div');
                     cell.className = 'tile empty';
-                    cell.textContent = '';
                     row.appendChild(cell);
                 }
                 boardDiv.appendChild(row);
             }
         }
-        
+
         function buildKeyboard() {
-            // Disposition AZERTY française
             const rows = [
                 ['A','Z','E','R','T','Y','U','I','O','P'],
                 ['Q','S','D','F','G','H','J','K','L','M'],
                 ['Entrer','W','X','C','V','B','N','⌫']
             ];
-            
             keyboardDiv.innerHTML = '';
             rows.forEach(row => {
                 const kbRow = document.createElement('div');
@@ -412,72 +256,52 @@
                 keyboardDiv.appendChild(kbRow);
             });
         }
-        
-        function updateKeyboardColors() {
-            // Met à jour les couleurs du clavier selon l'historique des tentatives
-            const letterStates = {}; // 'correct', 'present', 'absent'
-            
-            // Parcourir toutes les tentatives validées
-            for (const guess of attempts) {
-                const fullGuess = firstLetter + guess;
-                for (let i = 0; i < fullGuess.length; i++) {
-                    const letter = fullGuess[i];
-                    if (i < secretWord.length && letter === secretWord[i]) {
-                        letterStates[letter] = 'correct';
-                    } else if (secretWord.includes(letter) && letterStates[letter] !== 'correct') {
-                        if (letterStates[letter] !== 'correct') letterStates[letter] = 'present';
-                    } else {
-                        if (!letterStates[letter]) letterStates[letter] = 'absent';
-                    }
+
+        function evaluateGuess(secret, fullGuess) {
+            const result = new Array(remainingLetters.length).fill('absent');
+            const normalize = str => str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            const secretLetters = normalize(secret).split('');
+            const guessLetters = normalize(fullGuess).split('');
+            const letterCount = {};
+            for (let i = 1; i < secret.length; i++) {
+                const l = secretLetters[i];
+                letterCount[l] = (letterCount[l] || 0) + 1;
+            }
+            for (let i = 1; i < fullGuess.length; i++) {
+                if (guessLetters[i] === secretLetters[i]) {
+                    result[i-1] = 'correct';
+                    letterCount[guessLetters[i]]--;
                 }
             }
-            
-            // Appliquer aux touches du clavier
-            document.querySelectorAll('.key').forEach(btn => {
-                const key = btn.dataset.key;
-                if (key === 'Entrer' || key === '⌫') return;
-                const state = letterStates[key];
-                btn.classList.remove('correct', 'present', 'absent');
-                if (state === 'correct') btn.classList.add('correct');
-                else if (state === 'present') btn.classList.add('present');
-                else if (state === 'absent') btn.classList.add('absent');
-            });
+            for (let i = 1; i < fullGuess.length; i++) {
+                if (result[i-1] === 'correct') continue;
+                const l = guessLetters[i];
+                if (letterCount[l] > 0) {
+                    result[i-1] = 'present';
+                    letterCount[l]--;
+                }
+            }
+            return result;
         }
-        
+
         function updateBoard() {
             const rows = boardDiv.children;
-            // Réinitialiser toutes les lignes sauf la première cellule fixe
             for (let i = 0; i < MAX_ATTEMPTS; i++) {
                 const cells = rows[i].children;
-                // cells[0] reste toujours correct (firstLetter)
                 for (let j = 1; j < cells.length; j++) {
                     cells[j].className = 'tile empty';
                     cells[j].textContent = '';
                 }
             }
-            
-            // Afficher les tentatives passées avec leurs couleurs
             for (let i = 0; i < attempts.length; i++) {
                 const guess = attempts[i];
                 const cells = rows[i].children;
                 const evaluation = evaluateGuess(secretWord, firstLetter + guess);
-                
-                // cells[0] : déjà correct, on ne change pas.
                 for (let j = 1; j < cells.length; j++) {
-                    const letter = guess[j-1];
-                    cells[j].textContent = letter;
-                    cells[j].classList.remove('empty', 'filled');
-                    if (evaluation[j-1] === 'correct') {
-                        cells[j].className = 'tile correct';
-                    } else if (evaluation[j-1] === 'present') {
-                        cells[j].className = 'tile present';
-                    } else {
-                        cells[j].className = 'tile absent';
-                    }
+                    cells[j].textContent = guess[j-1];
+                    cells[j].className = 'tile ' + evaluation[j-1];
                 }
             }
-            
-            // Afficher la tentative en cours (lettres tapées)
             const currentRowIndex = attempts.length;
             if (currentRowIndex < MAX_ATTEMPTS) {
                 const cells = rows[currentRowIndex].children;
@@ -485,74 +309,50 @@
                     const idx = j - 1;
                     if (idx < currentGuess.length) {
                         cells[j].textContent = currentGuess[idx];
-                        cells[j].classList.remove('empty');
-                        cells[j].classList.add('filled');
+                        cells[j].className = 'tile filled';
                     } else {
                         cells[j].textContent = '';
-                        cells[j].classList.add('empty');
-                        cells[j].classList.remove('filled');
+                        cells[j].className = 'tile empty';
                     }
                 }
             }
         }
-        
-        function evaluateGuess(secret, fullGuess) {
-            // Retourne un tableau pour les lettres après la première (taille remainingLetters)
-            const result = new Array(remainingLetters.length).fill('absent');
-            const secretLetters = secret.split('').map(l => l.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
-            const guessLetters = fullGuess.split('').map(l => l.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
-            
-            // Comptage des lettres du mot secret
-            const letterCount = {};
-            secretLetters.forEach((l, idx) => {
-                if (idx === 0) return; // on ignore la première
-                letterCount[l] = (letterCount[l] || 0) + 1;
+
+        function updateKeyboardColors() {
+            const letterStates = {};
+            for (const guess of attempts) {
+                const fullGuess = firstLetter + guess;
+                const evaluation = evaluateGuess(secretWord, fullGuess);
+                for (let i = 1; i < fullGuess.length; i++) {
+                    const letter = fullGuess[i];
+                    if (evaluation[i-1] === 'correct') letterStates[letter] = 'correct';
+                    else if (evaluation[i-1] === 'present' && letterStates[letter] !== 'correct')
+                        letterStates[letter] = 'present';
+                    else if (!letterStates[letter])
+                        letterStates[letter] = 'absent';
+                }
+            }
+            document.querySelectorAll('.key').forEach(btn => {
+                const key = btn.dataset.key;
+                if (key === 'Entrer' || key === '⌫') return;
+                btn.classList.remove('correct', 'present', 'absent');
+                if (letterStates[key]) btn.classList.add(letterStates[key]);
             });
-            
-            // Premier passage : bonnes positions
-            for (let i = 1; i < fullGuess.length; i++) {
-                const secretChar = secretLetters[i];
-                const guessChar = guessLetters[i];
-                if (guessChar === secretChar) {
-                    result[i-1] = 'correct';
-                    letterCount[guessChar]--;
-                }
-            }
-            
-            // Second passage : présentes mais mal placées
-            for (let i = 1; i < fullGuess.length; i++) {
-                if (result[i-1] === 'correct') continue;
-                const guessChar = guessLetters[i];
-                if (letterCount[guessChar] > 0) {
-                    result[i-1] = 'present';
-                    letterCount[guessChar]--;
-                }
-            }
-            return result;
         }
-        
+
         function submitGuess() {
             if (gameOver) return;
             if (currentGuess.length !== remainingLetters.length) {
                 updateMessage(`Il manque ${remainingLetters.length - currentGuess.length} lettre(s)`);
                 return;
             }
-            
             const fullGuess = firstLetter + currentGuess;
             if (!DICTIONARY.has(fullGuess)) {
                 updateMessage("Ce mot n'est pas dans le dictionnaire");
-                // Animation d'erreur légère
-                const row = boardDiv.children[attempts.length];
-                if (row) row.classList.add('shake');
-                setTimeout(() => row && row.classList.remove('shake'), 500);
                 return;
             }
-            
-            // Enregistrer la tentative
             attempts.push(currentGuess);
             const evaluation = evaluateGuess(secretWord, fullGuess);
-            
-            // Vérifier victoire
             if (evaluation.every(e => e === 'correct')) {
                 won = true;
                 gameOver = true;
@@ -565,20 +365,16 @@
             } else {
                 updateMessage('');
             }
-            
             currentGuess = '';
             updateBoard();
             updateKeyboardColors();
-            
             if (gameOver) {
-                // Désactiver le clavier visuellement
                 document.querySelectorAll('.key').forEach(b => b.disabled = true);
             }
         }
-        
+
         function handleKeyPress(key) {
             if (gameOver) return;
-            
             if (key === '⌫') {
                 currentGuess = currentGuess.slice(0, -1);
                 updateBoard();
@@ -593,107 +389,72 @@
                 }
             }
         }
-        
-        function updateMessage(msg) {
-            messageDiv.textContent = msg;
-        }
-        
+
+        function updateMessage(msg) { messageDiv.textContent = msg; }
+
         function generateShareText() {
+            const CORRECT = '🟥', PRESENT = '🟡', ABSENT = '🟦';
             let result = `Sutom personnalisé (${secretWord.length} lettres)\n`;
             result += `${attempts.length}/${MAX_ATTEMPTS}\n\n`;
-            
             for (const guess of attempts) {
                 const fullGuess = firstLetter + guess;
                 const evalRes = evaluateGuess(secretWord, fullGuess);
-                let line = CORRECT; // première lettre toujours rouge
-                for (const e of evalRes) {
-                    line += e === 'correct' ? CORRECT : e === 'present' ? PRESENT : ABSENT;
-                }
+                let line = CORRECT;
+                for (const e of evalRes) line += e === 'correct' ? CORRECT : e === 'present' ? PRESENT : ABSENT;
                 result += line + '\n';
             }
-            if (!won && attempts.length === MAX_ATTEMPTS) {
-                result += '\n' + '❌'.repeat(secretWord.length);
-            }
+            if (!won && attempts.length === MAX_ATTEMPTS) result += '\n' + '❌'.repeat(secretWord.length);
             return result;
         }
-        
+
         // ==================== ÉVÉNEMENTS ====================
-        // Clavier physique
         document.addEventListener('keydown', (e) => {
             if (gameContainer.classList.contains('hidden')) return;
-            if (e.key === 'Backspace') {
-                e.preventDefault();
-                handleKeyPress('⌫');
-            } else if (e.key === 'Enter') {
-                e.preventDefault();
-                handleKeyPress('Entrer');
-            } else {
-                const letter = e.key.toUpperCase();
-                if (/^[A-ZÀ-ÖØ-öø-ÿ]$/.test(letter)) {
-                    e.preventDefault();
-                    handleKeyPress(letter);
-                }
-            }
+            if (e.key === 'Backspace') { e.preventDefault(); handleKeyPress('⌫'); }
+            else if (e.key === 'Enter') { e.preventDefault(); handleKeyPress('Entrer'); }
+            else if (/^[A-Za-zÀ-ÖØ-öø-ÿ]$/.test(e.key)) { e.preventDefault(); handleKeyPress(e.key.toUpperCase()); }
         });
-        
-        // Boutons de partage
+
         document.getElementById('share-result').addEventListener('click', () => {
             const text = generateShareText();
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Résultat copié dans le presse-papier !');
-            }).catch(() => {
-                prompt('Copiez ce texte :', text);
-            });
+            navigator.clipboard.writeText(text).then(() => alert('Résultat copié !'));
         });
-        
+
         document.getElementById('copy-invite-link').addEventListener('click', () => {
-            const link = window.location.href;
-            navigator.clipboard.writeText(link).then(() => {
-                alert('Lien d\'invitation copié !');
-            });
+            navigator.clipboard.writeText(window.location.href).then(() => alert('Lien d\'invitation copié !'));
         });
-        
-        // Génération du lien personnalisé
+
+        // Génération du lien (corrigée)
         document.getElementById('generate-link').addEventListener('click', () => {
-            const input = document.getElementById('custom-word');
-            const word = input.value.trim().toUpperCase();
+            const word = document.getElementById('custom-word').value.trim().toUpperCase();
             if (!word || word.length < 2) {
                 alert("Veuillez entrer un mot valide.");
                 return;
             }
-            const encoded = encodeWordForUrl(word);
-            const link = window.location.origin + window.location.pathname + '?w=' + encoded;
+            const link = window.location.origin + window.location.pathname + '?w=' + encodeURIComponent(word);
             document.getElementById('invite-link-text').textContent = link;
             document.getElementById('invite-link-container').classList.remove('hidden');
         });
-        
+
         document.getElementById('copy-btn').addEventListener('click', () => {
             const link = document.getElementById('invite-link-text').textContent;
             navigator.clipboard.writeText(link).then(() => alert('Lien copié !'));
         });
-        
+
         // ==================== DÉMARRAGE ====================
-        const paramWord = getParam('w');
-        if (paramWord) {
-            const decoded = decodeWordFromUrl(paramWord);
+        const paramEncoded = getParam('w');
+        if (paramEncoded) {
+            const decoded = decodeURIComponent(paramEncoded);
             if (decoded) {
                 initGame(decoded);
             } else {
-                // Mot invalide, on affiche la création
-                showCreateMessage("Le lien d'invitation est invalide. Créez-en un nouveau.");
+                gameContainer.classList.add('hidden');
+                createContainer.classList.remove('hidden');
             }
         } else {
-            // Aucun mot : afficher le formulaire de création
             gameContainer.classList.add('hidden');
             createContainer.classList.remove('hidden');
-        }
-        
-        function showCreateMessage(msg) {
-            gameContainer.classList.add('hidden');
-            createContainer.classList.remove('hidden');
-            if (msg) alert(msg);
         }
     </script>
 </body>
 </html>
-
