@@ -197,18 +197,26 @@ else if(state==='present'&&!key.classList.contains('correct')) key.className='ke
 else if(state==='absent'&&!key.classList.contains('correct')) key.className='key absent';
 }
 
-// Chargement intelligent (fix bug double saisie)
-if (!load()) {
+// Chargement intelligent (priorité au lien)
+(function init(){
   const params = new URLSearchParams(location.search);
   const encoded = params.get("w");
 
   if (encoded) {
+    // Si un lien est présent → on ignore la sauvegarde
+    localStorage.removeItem("sutom_ultra");
     secretWord = atob(encoded);
     start();
+  } else {
+    // Sinon on charge la sauvegarde
+    load();
   }
+})();
 }
 </script>
 
 </body>
+</html>
+
 </html>
 
