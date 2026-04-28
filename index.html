@@ -1,222 +1,699 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Sutom Ultra</title>
-<style>
-body { font-family: Arial; background:#1e3a8a; color:white; text-align:center; }
-h1 { color:#ff3b3b; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sutom • Invitation personnalisée</title>
+    <style>
+        /* ---------- Style très fidèle à Sutom ---------- */
+        :root {
+            --bg: #121213;
+            --tile-red: #e64a2e;
+            --tile-yellow: #c9a72b;
+            --tile-blue: #457b9d;
+            --tile-empty: #3a3a3c;
+            --key-bg: #818384;
+            --key-absent: #3a3a3c;
+            --text: #ffffff;
+            --tile-text: #ffffff;
+        }
 
-#grid { margin-top:20px; }
-.row { display:flex; justify-content:center; }
+        * {
+            box-sizing: border-box;
+        }
 
-.cell {
-  width:55px; height:55px; margin:3px;
-  border:2px solid white;
-  display:flex; align-items:center; justify-content:center;
-  font-size:28px; font-weight:bold;
-  text-transform:uppercase;
-  background:#1e3a8a;
-  transition: transform 0.6s;
-}
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 1rem;
+            user-select: none;
+        }
 
-.flip { transform: rotateX(360deg); }
+        h1 {
+            margin: 0.2em 0;
+            font-size: 2rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
 
-.correct { background:#ff3b3b; border-color:#ff3b3b; }
-.present { background:#ffd700; border-color:#ffd700; color:black; }
-.absent { background:#2c2c2c; border-color:#2c2c2c; }
+        .board {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin: 1rem 0;
+        }
 
-#keyboard { margin-top:20px; }
-.key {
-  display:inline-block;
-  padding:12px;
-  margin:4px;
-  background:#d1d5db;
-  color:black;
-  border-radius:6px;
-  cursor:pointer;
-  min-width:30px;
-}
+        .row {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
 
-.key.correct { background:#ff3b3b; color:white; }
-.key.present { background:#ffd700; }
-.key.absent { background:#444; color:white; }
-</style>
+        .tile {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: var(--tile-text);
+            transition: all 0.2s;
+        }
+
+        /* Formes "Sutom" : carré pour bien placé, cercle pour présent/absent */
+        .tile.correct {
+            background: var(--tile-red);
+            border-radius: 4px;       /* carré */
+        }
+
+        .tile.present {
+            background: var(--tile-yellow);
+            border-radius: 50%;       /* cercle */
+        }
+
+        .tile.absent {
+            background: var(--tile-blue);
+            border-radius: 50%;       /* cercle */
+        }
+
+        .tile.empty {
+            background: none;
+            border: 2px solid var(--tile-empty);
+            border-radius: 4px;
+        }
+
+        .tile.filled {
+            border: 2px solid var(--key-bg);
+            border-radius: 4px;
+            background: none;
+        }
+
+        .keyboard {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .keyboard-row {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .key {
+            background: var(--key-bg);
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 0.7em 0.4em;
+            min-width: 2.2em;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-transform: uppercase;
+        }
+
+        .key.wide {
+            min-width: 3.5em;
+            font-size: 0.9rem;
+        }
+
+        .key.correct {
+            background: var(--tile-red);
+        }
+
+        .key.present {
+            background: var(--tile-yellow);
+        }
+
+        .key.absent {
+            background: var(--key-absent);
+        }
+
+        .message {
+            margin: 1rem 0;
+            font-size: 1.2rem;
+            text-align: center;
+            min-height: 1.5em;
+        }
+
+        .share-btn, .create-btn {
+            background: #538d4e;
+            color: white;
+            border: none;
+            padding: 0.8em 1.5em;
+            font-size: 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-weight: bold;
+        }
+
+        .copy-link {
+            background: var(--key-bg);
+            color: white;
+            border: none;
+            padding: 0.6em 1.2em;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .create-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .create-section input {
+            padding: 0.7em;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            width: 200px;
+            border-radius: 4px;
+            border: 1px solid #565758;
+            background: #2b2b2c;
+            color: white;
+            text-align: center;
+        }
+
+        .invite-link-box {
+            background: #2b2b2c;
+            padding: 0.8em;
+            border-radius: 6px;
+            margin: 1rem 0;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #d7dadc;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
+    <h1>SUTOM</h1>
+    <div id="game-container" class="hidden">
+        <div class="board" id="board"></div>
+        <div class="message" id="message"></div>
+        <div class="keyboard" id="keyboard"></div>
+        <div style="margin-top: 1rem;">
+            <button class="share-btn" id="share-result">📋 Partager ce résultat</button>
+            <button class="copy-link" id="copy-invite-link">🔗 Copier le lien d'invitation</button>
+        </div>
+    </div>
 
-<h1>SUTOM</h1>
+    <div id="create-container">
+        <div class="create-section">
+            <h2>Créer une partie personnalisée</h2>
+            <p>Entrez un mot français (5 à 9 lettres, accents autorisés) :</p>
+            <input type="text" id="custom-word" maxlength="9" placeholder="EXEMPLE" autocomplete="off" autocorrect="off" autocapitalize="characters">
+            <br><br>
+            <button class="create-btn" id="generate-link">🔗 Générer le lien d'invitation</button>
+            <div id="invite-link-container" class="hidden">
+                <p>Partagez ce lien :</p>
+                <div class="invite-link-box" id="invite-link-text"></div>
+                <button class="copy-link" id="copy-btn">📋 Copier</button>
+            </div>
+        </div>
+    </div>
 
-<div id="setup">
-  <input type="text" id="secret" placeholder="Mot secret">
-  <button onclick="createLink()">Créer lien</button>
-</div>
-
-<div id="game" style="display:none;">
-  <div id="grid"></div>
-  <div id="keyboard"></div>
-</div>
-
-<script>
-let secretWord="";
-let attempts=0;
-let currentGuess="";
-const maxAttempts=6;
-const alphabetRows=["AZERTYUIOP","QSDFGHJKLM","WXCVBN"];
-
-function save(){
-localStorage.setItem("sutom_ultra",JSON.stringify({secretWord,attempts,currentGuess,grid:document.getElementById('grid').innerHTML}))
-}
-
-function load(){
-const s=localStorage.getItem("sutom_ultra");
-if(!s)return false;
-const d=JSON.parse(s);
-secretWord=d.secretWord;attempts=d.attempts;currentGuess=d.currentGuess;
-document.getElementById('setup').style.display='none';
-document.getElementById('game').style.display='block';
-document.getElementById('grid').innerHTML=d.grid;
-initKeyboard();return true;
-}
-
-function createLink(){
-const w=document.getElementById('secret').value.toUpperCase();
-if(!w)return alert("Mot");
-const url=location.origin+location.pathname+"?w="+btoa(w);
-navigator.clipboard.writeText(url);
-alert("Lien copié")
-}
-
-function loadURL(){
-const p=new URLSearchParams(location.search);
-if(p.get("w")){secretWord=atob(p.get("w"));start();}
-}
-
-function start(){
-document.getElementById('setup').style.display='none';
-document.getElementById('game').style.display='block';
-initGrid();initKeyboard();save();
-}
-
-function initGrid(){
-const g=document.getElementById('grid');g.innerHTML="";
-for(let i=0;i<maxAttempts;i++){
-let r=document.createElement('div');r.className='row';
-for(let j=0;j<secretWord.length;j++){
-let c=document.createElement('div');c.className='cell';
-if(j===0){
-  c.textContent=secretWord[0];
-  c.classList.add('correct');
-}
-r.appendChild(c);
-}
-g.appendChild(r);
-}
-}
-
-function initKeyboard(){
-const k=document.getElementById('keyboard');k.innerHTML="";
-alphabetRows.forEach(row=>{
-let div=document.createElement('div');
-for(let l of row){
-let key=document.createElement('span');
-key.className='key';key.textContent=l;
-key.onclick=()=>press(l);
-div.appendChild(key);
-}
-k.appendChild(div);
-});
-let enter=document.createElement('span');enter.textContent="ENTER";enter.className='key';enter.onclick=validate;
-let del=document.createElement('span');del.textContent="⌫";del.className='key';del.onclick=delLetter;
-k.appendChild(enter);k.appendChild(del);
-}
-
-function press(l){
-if(currentGuess.length>=secretWord.length-1)return;
-currentGuess+=l;update();save();
-}
-
-function delLetter(){
-currentGuess=currentGuess.slice(0,-1);update();save();
-}
-
-function update(){
-let row=document.getElementsByClassName('row')[attempts];
-for(let i=0;i<secretWord.length;i++){
-if(i===0) continue;
-row.children[i].textContent=currentGuess[i-1]||"";
-}
-}
-
-function evaluate(guess,word){
-let res=Array(guess.length).fill('absent');
-let wArr=word.split('');
-
-for(let i=0;i<guess.length;i++){
-if(guess[i]===wArr[i]){res[i]='correct';wArr[i]=null;}
-}
-
-for(let i=0;i<guess.length;i++){
-if(res[i]==='correct')continue;
-let idx=wArr.indexOf(guess[i]);
-if(idx!==-1){res[i]='present';wArr[idx]=null;}
-}
-return res;
-}
-
-function validate(){
-if(currentGuess.length!==secretWord.length-1)return;
-let fullGuess=secretWord[0]+currentGuess;
-let row=document.getElementsByClassName('row')[attempts];
-let result=evaluate(fullGuess,secretWord);
-
-result.forEach((r,i)=>{
-let cell=row.children[i];
-setTimeout(()=>{
-cell.classList.add('flip');
-setTimeout(()=>{
-cell.classList.add(r);
-updateKey(fullGuess[i],r);
-},300);
-},i*400);
-});
-
-attempts++;currentGuess="";save();
-
-setTimeout(()=>{
-if(result.every(x=>x==='correct')) alert("Gagné !");
-else if(attempts>=maxAttempts) alert("Perdu: "+secretWord);
-},secretWord.length*400);
-}
-
-function updateKey(letter,state){
-let key=[...document.getElementsByClassName('key')].find(k=>k.textContent===letter);
-if(!key)return;
-if(state==='correct') key.className='key correct';
-else if(state==='present'&&!key.classList.contains('correct')) key.className='key present';
-else if(state==='absent'&&!key.classList.contains('correct')) key.className='key absent';
-}
-
-// Chargement intelligent (priorité au lien)
-(function init(){
-  const params = new URLSearchParams(location.search);
-  const encoded = params.get("w");
-
-  if (encoded) {
-    // Si un lien est présent → on ignore la sauvegarde
-    localStorage.removeItem("sutom_ultra");
-    secretWord = atob(encoded);
-    start();
-  } else {
-    // Sinon on charge la sauvegarde
-    load();
-  }
-})();
-}
-</script>
-
+    <script>
+        // ==================== DICTIONNAIRE (à enrichir) ====================
+        const DICTIONARY = new Set([
+            "AVION","BALLE","BARRE","BOULE","BRISE","CABIN","CADRE","CANNE","CHIEN","CIRER",
+            "COUPE","COURT","DETTE","DINER","DROLE","ECART","ECHEC","EGARD","ELITE","ENTRE",
+            "EPAIS","EPOQUE","ESSAI","ETAGE","ETUDE","FAIRE","FAUTE","FEMME","FERME","FERTE",
+            "FLEUR","FLUID","FONCE","FORCE","FORME","FORTE","FOSSE","FRUIT","GARDE","GENRE",
+            "GESTE","GLOBE","GRAND","GRAVE","GROSS","HAINE","HAVRE","HERBE","HONTE","HUILE",
+            "HUMAN","IDEAL","IMAGE","IMPOT","ISSUE","JAUNE","JETEE","JOUER","JUGER","LARGE",
+            "LATIN","LEGER","LENTE","LEVER","LIBRE","LIGNE","LITRE","LIVRE","LOGER","LOIRE",
+            "LONGE","LOUER","LUMEN","LUNDI","LUTTE","LYCEE","MAIRE","MAJOR","MALIN","MANGE",
+            "MARRE","MASSE","MATIN","MEDIA","MERCI","METAL","METRE","MICRO","MIEUX","MINCE",
+            "MISER","MOINS","MONDE","MONTE","MORAL","MOTIF","MOULE","MOYEN","NAGER","NATAL",
+            "NOIRE","NORME","NOTER","NOYAU","NUAGE","ONDEE","ORAGE","ORDRE","OUTIL","PALIR",
+            "PANNE","PARER","PARTI","PATTE","PAUSE","PEINE","PENAL","PENSE","PERLE","PESER",
+            "PHASE","PHOTO","PIECE","PISTE","PLACE","PLAGE","PLAIE","PLANE","PLATE","PLEIN",
+            "PLIER","PLUIE","POIDS","POINT","POLIR","PORTE","POSER","POTEA","POUCE","PREVU",
+            "PRIER","PRIME","PRISE","PROIE","PROSE","PROUE","PUITS","PURGE","RADAR","RADIO",
+            "RAMER","RANGE","RATER","REAGI","REBEU","RECIT","RECUL","REGLE","REINE","REJET",
+            "RENDU","REPAS","REPLI","RETRA","REUNI","REVER","RIDEA","RIVAL","ROTIR","ROUGE",
+            "RUSER","SABOT","SAINT","SAISI","SALLE","SALON","SALUT","SANTE","SAUVE","SAVON",
+            "SCENE","SELON","SERIE","SERRE","SEUIL","SEULE","SIGNE","SILER","SITUE","SOBRE",
+            "SOEUR","SOIFS","SOIRE","SOLDE","SOMME","SONDE","SORTE","SOUCI","SOURI","SPORT",
+            "STADE","STYLE","SUITE","SUIVI","SUJET","SUPER","TABLE","TACHE","TANTE","TARIF",
+            "TEINT","TEMPS","TENDU","TENIR","TERME","TERRE","TEXTE","TIEDE","TIGRE","TIRER",
+            "TISSU","TITRE","TOILE","TOMBE","TONNE","TORTU","TOTAL","TOUCH","TOUTE","TRAIN",
+            "TRAIT","TREVE","TROIS","TROMP","TRONE","TROUE","TUYAU","USAGE","VAGUE","VALET",
+            "VANNE","VAPES","VEGAN","VENDU","VENTE","VENUE","VERBE","VERRE","VERTU","VETUE",
+            "VIDEO","VIEIL","VIGNE","VILLE","VISER","VITAL","VITRE","VOILE","VOIRE","VOIX",
+            "VOLER","VOTER","VOUTE","VOYER","ZEBRE"
+            // Ajoutez ici des mots de différentes longueurs (5 à 9 lettres)
+        ]);
+        
+        // On ajoute quelques mots de 6,7,8 lettres pour l'exemple
+        ["CHATON","FLEURS","PLANER","ROUTER","SIMPLE","TABLEAU","VOITURE","AVIATEUR","BATIMENT",
+         "CHAMPION","DECHIRER","ECRIVAIN","FOURNEAU","HORIZON","JOURNAL","MAGASIN","NUMERAL",
+         "ORANGER","PAYSAGE","RENARDER","SOLITAIRE","TERRAIN","URGENCE","VOISINER","ZENITUDE"
+        ].forEach(w => DICTIONARY.add(w));
+        
+        // Petite liste de mots plus longs
+        ["ABSOLUMENT","BRICOLAGE","CAMEMBERT","DECORATION","ESCALADER","FRAGILITE","GOUVERNER",
+         "HARMONIEUX","IMPATIENT","JARDINAGE","KILOMETRE","LUMINEUSE","MAGNIFIQUE","NARRATEUR",
+         "OBLIGERAI","PARCOURIR","QUESTIONS","RENCONTRE"
+        ].forEach(w => DICTIONARY.add(w));
+        
+        // ==================== GESTION URL ====================
+        function getParam(name) {
+            const url = new URL(window.location.href);
+            return url.searchParams.get(name);
+        }
+        
+        function encodeWordForUrl(word) {
+            const encoder = new TextEncoder();
+            const bytes = encoder.encode(word);
+            let binary = '';
+            bytes.forEach(b => binary += String.fromCharCode(b));
+            return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/,'');
+        }
+        
+        function decodeWordFromUrl(encoded) {
+            try {
+                encoded = encoded.replace(/-/g, '+').replace(/_/g, '/');
+                const binary = atob(encoded);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) {
+                    bytes[i] = binary.charCodeAt(i);
+                }
+                return new TextDecoder().decode(bytes).toUpperCase().trim();
+            } catch(e) {
+                return null;
+            }
+        }
+        
+        // ==================== GESTION DU JEU ====================
+        let secretWord = '';
+        let firstLetter = '';
+        let remainingLetters = ''; // lettres à deviner (sans la première)
+        let attempts = [];
+        const MAX_ATTEMPTS = 6;
+        let currentGuess = '';
+        let gameOver = false;
+        let won = false;
+        
+        const boardDiv = document.getElementById('board');
+        const messageDiv = document.getElementById('message');
+        const keyboardDiv = document.getElementById('keyboard');
+        const gameContainer = document.getElementById('game-container');
+        const createContainer = document.getElementById('create-container');
+        
+        // Couleurs pour le partage (emoji)
+        const CORRECT = '🟥';
+        const PRESENT = '🟡';
+        const ABSENT = '🟦';
+        
+        function initGame(word) {
+            word = word.toUpperCase().trim();
+            // Vérifications de base
+            if (!word || word.length < 2 || !/^[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜŸÇ]{2,}$/i.test(word)) {
+                showCreateMessage("Mot invalide. Utilisez uniquement des lettres (accents acceptés).");
+                return;
+            }
+            
+            secretWord = word;
+            firstLetter = word[0];
+            remainingLetters = word.slice(1);
+            
+            attempts = [];
+            currentGuess = '';
+            gameOver = false;
+            won = false;
+            
+            // Afficher le jeu, cacher la création
+            gameContainer.classList.remove('hidden');
+            createContainer.classList.add('hidden');
+            
+            // Mettre à jour l'URL sans recharger
+            const newUrl = window.location.origin + window.location.pathname + '?w=' + encodeWordForUrl(word);
+            window.history.replaceState({}, '', newUrl);
+            
+            // Construire le plateau et le clavier
+            buildBoard();
+            buildKeyboard();
+            updateMessage('');
+            document.getElementById('copy-invite-link').classList.remove('hidden');
+            document.getElementById('share-result').classList.add('hidden');
+            
+            // Focus sur le document pour les touches physiques
+            document.body.focus();
+        }
+        
+        function buildBoard() {
+            boardDiv.innerHTML = '';
+            for (let i = 0; i < MAX_ATTEMPTS; i++) {
+                const row = document.createElement('div');
+                row.className = 'row';
+                
+                // Première cellule (fixe, rouge)
+                const firstCell = document.createElement('div');
+                firstCell.className = 'tile correct';
+                firstCell.textContent = firstLetter;
+                row.appendChild(firstCell);
+                
+                // Cellules des lettres restantes
+                for (let j = 0; j < remainingLetters.length; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'tile empty';
+                    cell.textContent = '';
+                    row.appendChild(cell);
+                }
+                boardDiv.appendChild(row);
+            }
+        }
+        
+        function buildKeyboard() {
+            // Disposition AZERTY française
+            const rows = [
+                ['A','Z','E','R','T','Y','U','I','O','P'],
+                ['Q','S','D','F','G','H','J','K','L','M'],
+                ['Entrer','W','X','C','V','B','N','⌫']
+            ];
+            
+            keyboardDiv.innerHTML = '';
+            rows.forEach(row => {
+                const kbRow = document.createElement('div');
+                kbRow.className = 'keyboard-row';
+                row.forEach(key => {
+                    const btn = document.createElement('button');
+                    btn.className = 'key';
+                    if (key === 'Entrer' || key === '⌫') btn.classList.add('wide');
+                    btn.textContent = key === 'Entrer' ? 'ENTRER' : key;
+                    btn.dataset.key = key;
+                    btn.addEventListener('click', () => handleKeyPress(key));
+                    kbRow.appendChild(btn);
+                });
+                keyboardDiv.appendChild(kbRow);
+            });
+        }
+        
+        function updateKeyboardColors() {
+            // Met à jour les couleurs du clavier selon l'historique des tentatives
+            const letterStates = {}; // 'correct', 'present', 'absent'
+            
+            // Parcourir toutes les tentatives validées
+            for (const guess of attempts) {
+                const fullGuess = firstLetter + guess;
+                for (let i = 0; i < fullGuess.length; i++) {
+                    const letter = fullGuess[i];
+                    if (i < secretWord.length && letter === secretWord[i]) {
+                        letterStates[letter] = 'correct';
+                    } else if (secretWord.includes(letter) && letterStates[letter] !== 'correct') {
+                        if (letterStates[letter] !== 'correct') letterStates[letter] = 'present';
+                    } else {
+                        if (!letterStates[letter]) letterStates[letter] = 'absent';
+                    }
+                }
+            }
+            
+            // Appliquer aux touches du clavier
+            document.querySelectorAll('.key').forEach(btn => {
+                const key = btn.dataset.key;
+                if (key === 'Entrer' || key === '⌫') return;
+                const state = letterStates[key];
+                btn.classList.remove('correct', 'present', 'absent');
+                if (state === 'correct') btn.classList.add('correct');
+                else if (state === 'present') btn.classList.add('present');
+                else if (state === 'absent') btn.classList.add('absent');
+            });
+        }
+        
+        function updateBoard() {
+            const rows = boardDiv.children;
+            // Réinitialiser toutes les lignes sauf la première cellule fixe
+            for (let i = 0; i < MAX_ATTEMPTS; i++) {
+                const cells = rows[i].children;
+                // cells[0] reste toujours correct (firstLetter)
+                for (let j = 1; j < cells.length; j++) {
+                    cells[j].className = 'tile empty';
+                    cells[j].textContent = '';
+                }
+            }
+            
+            // Afficher les tentatives passées avec leurs couleurs
+            for (let i = 0; i < attempts.length; i++) {
+                const guess = attempts[i];
+                const cells = rows[i].children;
+                const evaluation = evaluateGuess(secretWord, firstLetter + guess);
+                
+                // cells[0] : déjà correct, on ne change pas.
+                for (let j = 1; j < cells.length; j++) {
+                    const letter = guess[j-1];
+                    cells[j].textContent = letter;
+                    cells[j].classList.remove('empty', 'filled');
+                    if (evaluation[j-1] === 'correct') {
+                        cells[j].className = 'tile correct';
+                    } else if (evaluation[j-1] === 'present') {
+                        cells[j].className = 'tile present';
+                    } else {
+                        cells[j].className = 'tile absent';
+                    }
+                }
+            }
+            
+            // Afficher la tentative en cours (lettres tapées)
+            const currentRowIndex = attempts.length;
+            if (currentRowIndex < MAX_ATTEMPTS) {
+                const cells = rows[currentRowIndex].children;
+                for (let j = 1; j < cells.length; j++) {
+                    const idx = j - 1;
+                    if (idx < currentGuess.length) {
+                        cells[j].textContent = currentGuess[idx];
+                        cells[j].classList.remove('empty');
+                        cells[j].classList.add('filled');
+                    } else {
+                        cells[j].textContent = '';
+                        cells[j].classList.add('empty');
+                        cells[j].classList.remove('filled');
+                    }
+                }
+            }
+        }
+        
+        function evaluateGuess(secret, fullGuess) {
+            // Retourne un tableau pour les lettres après la première (taille remainingLetters)
+            const result = new Array(remainingLetters.length).fill('absent');
+            const secretLetters = secret.split('').map(l => l.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+            const guessLetters = fullGuess.split('').map(l => l.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+            
+            // Comptage des lettres du mot secret
+            const letterCount = {};
+            secretLetters.forEach((l, idx) => {
+                if (idx === 0) return; // on ignore la première
+                letterCount[l] = (letterCount[l] || 0) + 1;
+            });
+            
+            // Premier passage : bonnes positions
+            for (let i = 1; i < fullGuess.length; i++) {
+                const secretChar = secretLetters[i];
+                const guessChar = guessLetters[i];
+                if (guessChar === secretChar) {
+                    result[i-1] = 'correct';
+                    letterCount[guessChar]--;
+                }
+            }
+            
+            // Second passage : présentes mais mal placées
+            for (let i = 1; i < fullGuess.length; i++) {
+                if (result[i-1] === 'correct') continue;
+                const guessChar = guessLetters[i];
+                if (letterCount[guessChar] > 0) {
+                    result[i-1] = 'present';
+                    letterCount[guessChar]--;
+                }
+            }
+            return result;
+        }
+        
+        function submitGuess() {
+            if (gameOver) return;
+            if (currentGuess.length !== remainingLetters.length) {
+                updateMessage(`Il manque ${remainingLetters.length - currentGuess.length} lettre(s)`);
+                return;
+            }
+            
+            const fullGuess = firstLetter + currentGuess;
+            if (!DICTIONARY.has(fullGuess)) {
+                updateMessage("Ce mot n'est pas dans le dictionnaire");
+                // Animation d'erreur légère
+                const row = boardDiv.children[attempts.length];
+                if (row) row.classList.add('shake');
+                setTimeout(() => row && row.classList.remove('shake'), 500);
+                return;
+            }
+            
+            // Enregistrer la tentative
+            attempts.push(currentGuess);
+            const evaluation = evaluateGuess(secretWord, fullGuess);
+            
+            // Vérifier victoire
+            if (evaluation.every(e => e === 'correct')) {
+                won = true;
+                gameOver = true;
+                updateMessage('🎉 Bravo ! Vous avez trouvé le mot !');
+                document.getElementById('share-result').classList.remove('hidden');
+            } else if (attempts.length >= MAX_ATTEMPTS) {
+                gameOver = true;
+                updateMessage('😞 Dommage… Le mot était ' + secretWord);
+                document.getElementById('share-result').classList.remove('hidden');
+            } else {
+                updateMessage('');
+            }
+            
+            currentGuess = '';
+            updateBoard();
+            updateKeyboardColors();
+            
+            if (gameOver) {
+                // Désactiver le clavier visuellement
+                document.querySelectorAll('.key').forEach(b => b.disabled = true);
+            }
+        }
+        
+        function handleKeyPress(key) {
+            if (gameOver) return;
+            
+            if (key === '⌫') {
+                currentGuess = currentGuess.slice(0, -1);
+                updateBoard();
+                updateMessage('');
+            } else if (key === 'Entrer') {
+                submitGuess();
+            } else if (key.length === 1 && /^[A-Za-zÀ-ÖØ-öø-ÿ]$/.test(key)) {
+                if (currentGuess.length < remainingLetters.length) {
+                    currentGuess += key.toUpperCase();
+                    updateBoard();
+                    updateMessage('');
+                }
+            }
+        }
+        
+        function updateMessage(msg) {
+            messageDiv.textContent = msg;
+        }
+        
+        function generateShareText() {
+            let result = `Sutom personnalisé (${secretWord.length} lettres)\n`;
+            result += `${attempts.length}/${MAX_ATTEMPTS}\n\n`;
+            
+            for (const guess of attempts) {
+                const fullGuess = firstLetter + guess;
+                const evalRes = evaluateGuess(secretWord, fullGuess);
+                let line = CORRECT; // première lettre toujours rouge
+                for (const e of evalRes) {
+                    line += e === 'correct' ? CORRECT : e === 'present' ? PRESENT : ABSENT;
+                }
+                result += line + '\n';
+            }
+            if (!won && attempts.length === MAX_ATTEMPTS) {
+                result += '\n' + '❌'.repeat(secretWord.length);
+            }
+            return result;
+        }
+        
+        // ==================== ÉVÉNEMENTS ====================
+        // Clavier physique
+        document.addEventListener('keydown', (e) => {
+            if (gameContainer.classList.contains('hidden')) return;
+            if (e.key === 'Backspace') {
+                e.preventDefault();
+                handleKeyPress('⌫');
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                handleKeyPress('Entrer');
+            } else {
+                const letter = e.key.toUpperCase();
+                if (/^[A-ZÀ-ÖØ-öø-ÿ]$/.test(letter)) {
+                    e.preventDefault();
+                    handleKeyPress(letter);
+                }
+            }
+        });
+        
+        // Boutons de partage
+        document.getElementById('share-result').addEventListener('click', () => {
+            const text = generateShareText();
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Résultat copié dans le presse-papier !');
+            }).catch(() => {
+                prompt('Copiez ce texte :', text);
+            });
+        });
+        
+        document.getElementById('copy-invite-link').addEventListener('click', () => {
+            const link = window.location.href;
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Lien d\'invitation copié !');
+            });
+        });
+        
+        // Génération du lien personnalisé
+        document.getElementById('generate-link').addEventListener('click', () => {
+            const input = document.getElementById('custom-word');
+            const word = input.value.trim().toUpperCase();
+            if (!word || word.length < 2) {
+                alert("Veuillez entrer un mot valide.");
+                return;
+            }
+            const encoded = encodeWordForUrl(word);
+            const link = window.location.origin + window.location.pathname + '?w=' + encoded;
+            document.getElementById('invite-link-text').textContent = link;
+            document.getElementById('invite-link-container').classList.remove('hidden');
+        });
+        
+        document.getElementById('copy-btn').addEventListener('click', () => {
+            const link = document.getElementById('invite-link-text').textContent;
+            navigator.clipboard.writeText(link).then(() => alert('Lien copié !'));
+        });
+        
+        // ==================== DÉMARRAGE ====================
+        const paramWord = getParam('w');
+        if (paramWord) {
+            const decoded = decodeWordFromUrl(paramWord);
+            if (decoded) {
+                initGame(decoded);
+            } else {
+                // Mot invalide, on affiche la création
+                showCreateMessage("Le lien d'invitation est invalide. Créez-en un nouveau.");
+            }
+        } else {
+            // Aucun mot : afficher le formulaire de création
+            gameContainer.classList.add('hidden');
+            createContainer.classList.remove('hidden');
+        }
+        
+        function showCreateMessage(msg) {
+            gameContainer.classList.add('hidden');
+            createContainer.classList.remove('hidden');
+            if (msg) alert(msg);
+        }
+    </script>
 </body>
-</html>
-
 </html>
 
