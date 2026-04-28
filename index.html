@@ -1,47 +1,48 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Sutom Custom</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; background:#121213; color:white; }
-    h1 { color:#ff3b3b; letter-spacing:2px; }
+<meta charset="UTF-8">
+<title>Sutom Ultra</title>
+<style>
+body { font-family: Arial; background:#121213; color:white; text-align:center; }
+h1 { color:#ff3b3b; }
 
-    #grid { margin-top:20px; }
-    .row { display:flex; justify-content:center; margin-bottom:6px; }
+#grid { margin-top:20px; }
+.row { display:flex; justify-content:center; }
 
-    .cell {
-      width:52px; height:52px; margin:3px;
-      border:2px solid #3a3a3c;
-      display:flex; align-items:center; justify-content:center;
-      font-size:26px; font-weight:bold; text-transform:uppercase;
-      background:#121213; color:white;
-      perspective: 600px;
-    }
+.cell {
+  width:55px; height:55px; margin:3px;
+  border:2px solid #3a3a3c;
+  display:flex; align-items:center; justify-content:center;
+  font-size:28px; font-weight:bold;
+  text-transform:uppercase;
+  background:#121213;
+  transition: transform 0.6s;
+}
 
-    .inner { width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+.flip {
+  transform: rotateX(360deg);
+}
 
-    .flip { animation: flip 0.6s ease forwards; }
+.correct { background:#ff3b3b; border-color:#ff3b3b; }
+.present { background:#ffd700; border-color:#ffd700; color:black; }
+.absent { background:#3a3a3c; border-color:#3a3a3c; }
 
-    @keyframes flip {
-      0% { transform: rotateX(0deg); }
-      50% { transform: rotateX(90deg); }
-      100% { transform: rotateX(0deg); }
-    }
+#keyboard { margin-top:20px; }
+.key {
+  display:inline-block;
+  padding:12px;
+  margin:4px;
+  background:#818384;
+  border-radius:6px;
+  cursor:pointer;
+  min-width:30px;
+}
 
-    .correct { background:#ff3b3b; border-color:#ff3b3b; }
-    .present { background:#ffd700; border-color:#ffd700; color:black; }
-    .absent { background:#3a3a3c; border-color:#3a3a3c; }
-
-    input, button { padding:10px; margin:5px; font-size:16px; border-radius:5px; border:none; }
-    button { background:#ff3b3b; color:white; cursor:pointer; }
-
-    #keyboard { margin-top:20px; }
-    .key { display:inline-block; padding:10px; margin:3px; background:#818384; border-radius:4px; min-width:30px; }
-    .key.correct { background:#ff3b3b; }
-    .key.present { background:#ffd700; color:black; }
-    .key.absent { background:#3a3a3c; }
-  </style>
+.key.correct { background:#ff3b3b; }
+.key.present { background:#ffd700; color:black; }
+.key.absent { background:#3a3a3c; }
+</style>
 </head>
 <body>
 
@@ -53,135 +54,153 @@
 </div>
 
 <div id="game" style="display:none;">
-  <input type="text" id="guess">
-  <button onclick="submitGuess()">Valider</button>
   <div id="grid"></div>
   <div id="keyboard"></div>
 </div>
 
 <script>
-let secretWord = "";
-let attempts = 0;
-const maxAttempts = 6;
-const alphabet = "AZERTYUIOPQSDFGHJKLMWXCVBN";
+let secretWord="";
+let attempts=0;
+let currentGuess="";
+const maxAttempts=6;
+const alphabetRows=["AZERTYUIOP","QSDFGHJKLM","WXCVBN"];
 
-// 🔗 Créer un lien avec le mot
-function createLink() {
-  const word = document.getElementById('secret').value.toUpperCase();
-  if (!word) return alert("Entre un mot");
-
-  const encoded = btoa(word);
-  const url = window.location.origin + window.location.pathname + "?word=" + encoded;
-
-  navigator.clipboard.writeText(url);
-  alert("Lien copié ! Envoie-le 😎\n" + url);
+function save(){
+localStorage.setItem("sutom_ultra",JSON.stringify({secretWord,attempts,currentGuess,grid:document.getElementById('grid').innerHTML}))
 }
 
-// 🔓 Charger depuis URL
-function loadFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  const encoded = params.get("word");
-
-  if (encoded) {
-    secretWord = atob(encoded);
-    document.getElementById('setup').style.display = 'none';
-    document.getElementById('game').style.display = 'block';
-    initGrid();
-    initKeyboard();
-  }
+function load(){
+const s=localStorage.getItem("sutom_ultra");
+if(!s)return false;
+const d=JSON.parse(s);
+secretWord=d.secretWord;attempts=d.attempts;currentGuess=d.currentGuess;
+document.getElementById('setup').style.display='none';
+document.getElementById('game').style.display='block';
+document.getElementById('grid').innerHTML=d.grid;
+initKeyboard();return true;
 }
 
-function initGrid() {
-  const grid = document.getElementById('grid');
-  grid.innerHTML = "";
-
-  for (let i = 0; i < maxAttempts; i++) {
-    const row = document.createElement('div');
-    row.className = 'row';
-
-    for (let j = 0; j < secretWord.length; j++) {
-      const cell = document.createElement('div');
-      cell.className = 'cell';
-
-      const inner = document.createElement('div');
-      inner.className = 'inner';
-
-      if (j === 0 && i === 0) {
-        inner.textContent = secretWord[0];
-        cell.classList.add('correct');
-      }
-
-      cell.appendChild(inner);
-      row.appendChild(cell);
-    }
-
-    grid.appendChild(row);
-  }
+function createLink(){
+const w=document.getElementById('secret').value.toUpperCase();
+if(!w)return alert("Mot");
+const url=location.origin+location.pathname+"?w="+btoa(w);
+navigator.clipboard.writeText(url);
+alert("Lien copié")
 }
 
-function initKeyboard() {
-  const keyboard = document.getElementById('keyboard');
-  keyboard.innerHTML = "";
-
-  for (let letter of alphabet) {
-    const key = document.createElement('div');
-    key.className = 'key';
-    key.textContent = letter;
-    key.id = 'key-' + letter;
-    keyboard.appendChild(key);
-  }
+function loadURL(){
+const p=new URLSearchParams(location.search);
+if(p.get("w")){secretWord=atob(p.get("w"));start();}
 }
 
-function submitGuess() {
-  const guessInput = document.getElementById('guess');
-  const guess = guessInput.value.toUpperCase();
-
-  if (guess.length !== secretWord.length) {
-    return alert("Mauvaise longueur");
-  }
-
-  const row = document.getElementsByClassName('row')[attempts];
-
-  [...guess].forEach((letter, i) => {
-    const cell = row.children[i];
-    const inner = cell.firstChild;
-    const key = document.getElementById('key-' + letter);
-
-    setTimeout(() => {
-      inner.textContent = letter;
-      cell.classList.add('flip');
-
-      setTimeout(() => {
-        if (letter === secretWord[i]) {
-          cell.classList.add('correct');
-          key.classList.add('correct');
-        } else if (secretWord.includes(letter)) {
-          cell.classList.add('present');
-          if (!key.classList.contains('correct')) key.classList.add('present');
-        } else {
-          cell.classList.add('absent');
-          key.classList.add('absent');
-        }
-      }, 300);
-    }, i * 400);
-  });
-
-  attempts++;
-
-  setTimeout(() => {
-    if (guess === secretWord) {
-      alert("Gagné !");
-    } else if (attempts >= maxAttempts) {
-      alert("Perdu ! Mot : " + secretWord);
-    }
-  }, guess.length * 400);
-
-  guessInput.value = "";
+function start(){
+document.getElementById('setup').style.display='none';
+document.getElementById('game').style.display='block';
+initGrid();initKeyboard();save();
 }
 
-// lancer si lien
-loadFromURL();
+function initGrid(){
+const g=document.getElementById('grid');g.innerHTML="";
+for(let i=0;i<maxAttempts;i++){
+let r=document.createElement('div');r.className='row';
+for(let j=0;j<secretWord.length;j++){
+let c=document.createElement('div');c.className='cell';
+if(j===0&&i===0){c.textContent=secretWord[0];c.classList.add('correct');}
+r.appendChild(c);
+}
+g.appendChild(r);
+}
+}
+
+function initKeyboard(){
+const k=document.getElementById('keyboard');k.innerHTML="";
+alphabetRows.forEach(row=>{
+let div=document.createElement('div');
+for(let l of row){
+let key=document.createElement('span');
+key.className='key';key.textContent=l;
+key.onclick=()=>press(l);
+div.appendChild(key);
+}
+k.appendChild(div);
+});
+let enter=document.createElement('span');enter.textContent="ENTER";enter.className='key';enter.onclick=validate;
+let del=document.createElement('span');del.textContent="⌫";del.className='key';del.onclick=delLetter;
+k.appendChild(enter);k.appendChild(del);
+}
+
+function press(l){
+if(currentGuess.length>=secretWord.length)return;
+currentGuess+=l;update();save();
+}
+
+function delLetter(){
+currentGuess=currentGuess.slice(0,-1);update();save();
+}
+
+function update(){
+let row=document.getElementsByClassName('row')[attempts];
+for(let i=0;i<secretWord.length;i++){
+row.children[i].textContent=currentGuess[i]|| (i===0?secretWord[0]:"");
+}
+}
+
+function evaluate(guess,word){
+let res=Array(guess.length).fill('absent');
+let wArr=word.split('');
+
+for(let i=0;i<guess.length;i++){
+if(guess[i]===wArr[i]){
+res[i]='correct';
+wArr[i]=null;
+}
+}
+
+for(let i=0;i<guess.length;i++){
+if(res[i]==='correct')continue;
+let idx=wArr.indexOf(guess[i]);
+if(idx!==-1){res[i]='present';wArr[idx]=null;}
+}
+
+return res;
+}
+
+function validate(){
+if(currentGuess.length!==secretWord.length)return;
+let row=document.getElementsByClassName('row')[attempts];
+let result=evaluate(currentGuess,secretWord);
+
+result.forEach((r,i)=>{
+let cell=row.children[i];
+setTimeout(()=>{
+cell.classList.add('flip');
+setTimeout(()=>{
+cell.classList.add(r);
+updateKey(currentGuess[i],r);
+},300);
+},i*400);
+});
+
+attempts++;currentGuess="";save();
+
+setTimeout(()=>{
+if(result.every(x=>x==='correct')) alert("Gagné !");
+else if(attempts>=maxAttempts) alert("Perdu: "+secretWord);
+},secretWord.length*400);
+}
+
+function updateKey(letter,state){
+let key=[...document.getElementsByClassName('key')].find(k=>k.textContent===letter);
+if(!key)return;
+if(state==='correct') key.className='key correct';
+else if(state==='present' && !key.classList.contains('correct')) key.className='key present';
+else if(state==='absent' && !key.classList.contains('correct')) key.className='key absent';
+}
+
+if(!load()) loadURL();
 </script>
 
+</body>
+</html>
 </body>
 </html>
